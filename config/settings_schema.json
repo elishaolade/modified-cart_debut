@@ -1556,6 +1556,18 @@
           "zh-TW": "新增商品至購物車時顯示通知"
         },
         "default": true
+      },
+      {
+        "type":"select",
+        "id":"cart_options",
+        "label":{
+          "en": "Have cart popup or slide."
+        },
+        "options":[
+          { "value": "popup", "label": "Pop Up" },
+          { "value": "slide", "label": "Slide" }
+        ],
+        "default": "popup"
       }
     ]
   }
