@@ -6521,6 +6521,7 @@ theme.Cart = (function() {
     cartSubtotal: '[data-cart-subtotal]',
     cartTableCell: '[data-cart-table-cell]',
     cartWrapper: '[data-cart-wrapper]',
+    cartSliderWrapper: '[data-cart-wrapper]',
     emptyPageContent: '[data-empty-page-content]',
     quantityInput: '[data-quantity-input]',
     quantityInputMobile: '[data-quantity-input-mobile]',
@@ -7763,6 +7764,7 @@ theme.Product = (function() {
       addToCartText: '[data-add-to-cart-text]',
       cartCount: '[data-cart-count]',
       cartCountBubble: '[data-cart-count-bubble]',
+      altCartPopup: '[data-alt-popup-cart]',
       cartPopup: '[data-cart-popup]',
       cartPopupCartQuantity: '[data-cart-popup-cart-quantity]',
       cartPopupClose: '[data-cart-popup-close]',
@@ -7775,6 +7777,7 @@ theme.Product = (function() {
       cartPopupQuantityLabel: '[data-cart-popup-quantity-label]',
       cartPopupTitle: '[data-cart-popup-title]',
       cartPopupWrapper: '[data-cart-popup-wrapper]',
+      altCartPopupWrapper: '[data-alt-cart-popup-wrapper]',
       loader: '[data-loader]',
       loaderStatus: '[data-loader-status]',
       quantity: '[data-quantity-input]',
@@ -7805,6 +7808,7 @@ theme.Product = (function() {
 
     this.classes = {
       cartPopupWrapperHidden: 'cart-popup-wrapper--hidden',
+      altCartPopupWrapperHidden: 'alt-cart-popup-wrapper--hidden',
       hidden: 'hide',
       visibilityHidden: 'visibility-hidden',
       inputError: 'input--error',
@@ -8013,12 +8017,13 @@ theme.Product = (function() {
             this._showErrorMessage(theme.strings.quantityMinimumMessage);
             return;
           }
-
+          console.log(this)
           if (!isInvalidQuantity && this.ajaxEnabled) {
             // disable the addToCart and dynamic checkout button while
             // request/cart popup is loading and handle loading state
             this._handleButtonLoadingState(true);
             var form = this.container.querySelector(this.selectors.productForm);
+
             this._addItemToCart(form);
             return;
           }
@@ -8091,7 +8096,11 @@ theme.Product = (function() {
             throw error;
           }
           self._hideErrorMessage();
-          self._setupCartPopup(json);
+
+          if(this.selectors.cartPopupWrapper)
+            self._setupCartPopup(json);
+          else
+            self._setupAltCartPopup(json);
         })
         .catch(function(error) {
           self.previouslyFocusedElement.focus();
@@ -8155,6 +8164,16 @@ theme.Product = (function() {
       if (this.quantityInput) {
         this.quantityInput.classList.remove(this.classes.inputError);
       }
+    },
+
+    _setupAltCartPopup: function(item){
+      this.altCartPopup =
+        this.altCartPopup || document.querySelector(this.selectors.altCartPopup);
+      this.altCartPopupWrapper = 
+        this.altCartPopupWrapper || document.querySelector(this.selectors.altCartPopupWrapper);
+
+      this._updateAltPopupContent(item);
+      
     },
 
     _setupCartPopup: function(item) {
@@ -8222,6 +8241,23 @@ theme.Product = (function() {
         });
     },
 
+    _updateAltPopupContent: function(item) {
+      var self = this;
+
+      fetch('/cart.js')
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(cart) {
+          self._showAltCartPopup();
+        })
+        .catch(function(error) {
+          // eslint-disable-next-line no-console
+          console.log(error);
+        });
+
+    },
+
     _setupCartPopupEventListeners: function() {
       this.eventHandlers.cartPopupWrapperKeyupHandler = this._cartPopupWrapperKeyupHandler.bind(
         this
@@ -8242,6 +8278,10 @@ theme.Product = (function() {
         this.eventHandlers.hideCartPopup
       );
       document.body.addEventListener('click', this.eventHandlers.onBodyClick);
+    },
+
+    _setupAltCartPopupEventListeners: function() {
+
     },
 
     _cartPopupWrapperKeyupHandler: function(event) {
@@ -8388,6 +8428,20 @@ theme.Product = (function() {
         container: this.cartPopupWrapper,
         elementToFocus: this.cartPopup,
         namespace: 'cartPopupFocus'
+      });
+    },
+
+    _showAltCartPopup: function() {
+      theme.Helpers.prepareTransition(this.altCartPopupWrapper);
+
+      this.altCartPopupWrapper.classList.remove(
+        this.classes.altCartPopupWrapperHidden
+      );
+
+      slate.a11y.trapFocus({
+        container: this.altCartPopupWrapper,
+        elementToFocus: this.altCartPopup,
+        namespace: 'altCartPopupFocus'
       });
     },
 

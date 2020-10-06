@@ -1559,7 +1559,7 @@
       },
       {
         "type":"select",
-        "id":"cart_options",
+        "id":"cart-options",
         "label":{
           "en": "Have cart popup or slide."
         },

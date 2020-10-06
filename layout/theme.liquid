@@ -170,7 +170,11 @@
   <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
 
   {%- if settings.enable_ajax -%}
-    {% include 'cart-popup' %}
+    {%- if settings.cart-options == 'slide' -%}
+      {% include 'cart-slider' %}
+    {%- else -%}
+      {% include 'cart-popup' %}
+    {%- endif -%}
   {%- endif -%}
 
   {% section 'header' %}
