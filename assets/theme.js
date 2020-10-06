@@ -8243,12 +8243,19 @@ theme.Product = (function() {
 
     _updateAltPopupContent: function(item) {
       var self = this;
-
       fetch('/cart.js')
         .then(function(response) {
           return response.json();
         })
         .then(function(cart) {
+          /**  CART */ 
+          cart.items.forEach(item => {
+            var listItem = document.createElement('div');
+            var text = document.createTextNode(`Title: ${item.title} Qty:${item.quantity}`);
+            listItem.appendChild(text);
+            self.altCartPopup.appendChild(listItem);
+          });
+          /**  CART */
           self._showAltCartPopup();
         })
         .catch(function(error) {
@@ -8438,6 +8445,10 @@ theme.Product = (function() {
         this.classes.altCartPopupWrapperHidden
       );
 
+      
+      // $.getJSON('/cart.js', function(cart) {
+      //     alert('There are now ' + cart.item_count + ' items in the cart.');
+      // });
       slate.a11y.trapFocus({
         container: this.altCartPopupWrapper,
         elementToFocus: this.altCartPopup,
