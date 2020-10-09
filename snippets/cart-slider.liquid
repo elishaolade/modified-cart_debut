@@ -1,12 +1,10 @@
-<div class="cart-slider-wrapper alt-cart-popup-wrapper--hidden" data-alt-cart-popup-wrapper>
-    <div class="cart-slider" data-alt-popup-cart>
-        <script>
-            async function getData(url){
-                const res = await fetch(url, {
-                    method: 'GET'
-                })
-                return response.json();
-            }
-        </script>
+<div class="cart-drawer-outer fixed fill z-10 hide" data-cart-drawer-outer>
+    <div class="cart-drawer-overlay absolute fill" data-cart-drawer-overlay></div>
+    <div class="cart-drawer absolute w-100 z-max" data-cart-drawer>
+        <div class="cart-drawer_header">
+            <div class="header_container flex justify-content-center">
+                <h2>Your Cart</h2>
+            </div>
+        </div>
     </div>
 </div>

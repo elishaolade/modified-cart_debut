@@ -73,6 +73,14 @@
   - Remove `outline: none` from `.slick-dots li button`
 ==============================================================================*/
 /*================ Slick Slider SCSS ================*/
+
+:root {
+  --fast: 200ms;
+  --slow: 400ms;
+  --ease: ease-in-out;
+  --cubic: cubic-bezier(.01,.57,.13,1);
+}
+
 .slick-slider {
   position: relative;
   display: block;
@@ -1033,6 +1041,59 @@ textarea {
 
 .hide {
   display: none !important; }
+
+/*============Utility Added for Cart Drawer Feature 10/07==============*/
+
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+.svg-icon {
+  width: 1em;
+  height: 1em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+  fill: #000;
+}
+
+.svg-icon circle {
+  stroke: #000;
+  stroke-width: 1;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.absolute { 
+  position: absolute;
+}
+
+.flex { display: flex; }
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-content-center {
+  align-content: center;
+}
+
+.fill {
+  top: 0; 
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.z-10 { z-index: 1000; }
+
+.z-max { z-index: 9999; }
+
+.w-100 { width: 100%; }
 
 /*============================================================================
   Skip to content button
@@ -4229,6 +4290,46 @@ hr {
 
 .cart-popup__dismiss-button {
   font-size: calc(((var(--font-size-base) - 2) / (var(--font-size-base))) * 1em); }
+
+
+/*Code for Cart Drawer Added 10/07*/
+
+.cart-drawer-outer { 
+  transition: all .5s ease-in-out;
+}
+
+  .cart-drawer {
+    background: white;
+    max-width: 680px;
+    height: 100vh;
+    right: 0;
+    transform: translateX(100%);
+    transition: transform .3s ease-in-out;
+  }
+
+    .cart-drawer .header_container {
+      position: relative;
+      padding: 30px;
+    }
+
+      .cart-drawer .header_container {
+        box-sizing: border-box;
+        position: relative;
+        padding: 30px;
+      }
+
+  .cart-drawer.active {
+    transform: translateX(0%);
+  }
+
+.cart-drawer-overlay { 
+  background-color: transparent;
+  transition: opacity .3s ease-in-out;
+}
+
+.cart-drawer-overlay.active {
+  background-color: rgb(13,1,69,0.7);
+}
 
 .sidebar {
   margin-top: 40px; }
