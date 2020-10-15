@@ -6603,7 +6603,7 @@ theme.Cart = (function() {
   }
 
   Cart.prototype = Object.assign({}, Cart.prototype, {
-    _setupCartTemplates: function() {
+    _setupCartTemplates: function() { 
       var cartItem = this.container.querySelector(selectors.cartItem);
       if (!cartItem) return;
 
@@ -6691,6 +6691,7 @@ theme.Cart = (function() {
         })
         .then(
           function(state) {
+            console.log(state);
             this._setCartCountBubble(state.item_count);
 
             if (!state.item_count) {
@@ -7768,6 +7769,11 @@ theme.Product = (function() {
       cartDrawerOuter: '[data-cart-drawer-outer]',
       cartDrawerOverlay: '[data-cart-drawer-overlay]',
       cartDrawer: '[data-cart-drawer]',
+      cartDrawerList: '[data-cart-drawer-list]',
+      cartDrawerListItem: '[data-cart-drawer-list-item]',
+      cartItem: '[data-cart-item]',
+      cartItemId: '[data-cart-item-id]',
+      cartItemRemoveButton: '[data-cart-item-remove]',
       cartPopup: '[data-cart-popup]',
       cartPopupCartQuantity: '[data-cart-popup-cart-quantity]',
       cartPopupClose: '[data-cart-popup-close]',
@@ -7853,8 +7859,6 @@ theme.Product = (function() {
     /** Added 10/08 Thurs. */
     this.cartPopupWrapper = this.cartPopupWrapper || document.querySelector(this.selectors.cartPopupWrapper);
     this.cartDrawerOuter = this.cartDrawerOuter || document.querySelector(this.selectors.cartDrawerOuter);
-    console.log(this.cartPopupWrapper);
-    console.log(this.cartDrawerOuter);
 
     // Stop parsing if we don't have the product json script tag when loading
     // section in the Theme Editor
@@ -8253,6 +8257,98 @@ theme.Product = (function() {
         })
         .then(function(cart) {
           self._showCartDrawer();
+          if(cart.items){
+            const list = document.createElement('ul');
+            list.setAttribute("data-cart-drawer-list","");
+            self.cartDrawer.appendChild(list);
+            cart.items.forEach(item => {
+              const listItem = document.createElement('li');
+              listItem.setAttribute('data-cart-item', item.id);
+              /* thumbnail */
+              const thumbnail = document.createElement('img');
+              thumbnail.style.width = "100px";
+              thumbnail.src = item.featured_image.url;
+              /* thumbnail */
+              
+              /* left content */
+              const leftContent = document.createElement('div');
+              leftContent.className = 'l-side';
+              leftContent.appendChild(thumbnail);
+              /* left content */
+              
+              /* title */
+              const title = document.createElement('div');
+              title.textContent = item.title;
+              /* title */
+
+              /* price */
+              const price = document.createElement('div');
+              price.textContent = item.price;
+              /* price */
+
+              /* quantity */
+              const quantity = document.createElement('div');
+              quantity.textContent = item.quantity;
+              /* quantity */
+
+              /* right content */
+              const rightContent = document.createElement('div');
+              rightContent.className = 'r-side';
+              rightContent.appendChild(title);
+              rightContent.appendChild(price);
+              rightContent.appendChild(quantity);
+              /* right content */
+
+              /* remove button */
+              const path1 = document.createElement('path');
+              path1.setAttribute('d','M1.0606601717798212 1.0606601717798212 L14.939339828220179 14.939339828220179');
+
+              const path2 = document.createElement('path');
+              path2.setAttribute('d','M14.939339828220179 1.0606601717798212 L1.0606601717798212 14.939339828220179');
+
+
+              const svg = document.createElement('svg');
+              svg.setAttribute('viewBox','0 0 16 16');
+              svg.setAttribute('width','16');
+              svg.setAttribute('height','16');
+              svg.setAttribute('fill','none');
+              svg.setAttribute('stroke','currentcolor');
+              svg.setAttribute('stroke-width','3');
+              svg.style = 'display:inline-block;vertical-align:middle;overflow:visible;';
+
+              svg.appendChild(path1);
+              svg.appendChild(path2);
+
+              const removeBtn = document.createElement('button');
+              removeBtn.setAttribute("data-cart-item-remove", "");
+              removeBtn.style.border = "none";
+              removeBtn.style.background = "none";
+              removeBtn.style.color = "red";
+              removeBtn.style.position = "absolute";
+              removeBtn.style.right = 0;
+              removeBtn.style.top = 0;
+              removeBtn.textContent = "Remove";
+              removeBtn.appendChild(svg);
+              
+              /* remove button */
+              
+              /* content container */
+              const listItemContent = document.createElement('div');
+              listItemContent.className = 'flex';
+              listItemContent.appendChild(leftContent);
+              listItemContent.appendChild(rightContent);
+              listItemContent.style.position = "relative";
+              listItemContent.appendChild(removeBtn);
+              /* content container */
+
+
+              listItem.appendChild(listItemContent);
+              list.appendChild(listItem);
+            });
+          }
+          cart.items.forEach((item)=>{
+            self._setupCartItem(item)
+          });
         })
         .catch(function(error) {
           // eslint-disable-next-line no-console
@@ -8383,6 +8479,51 @@ theme.Product = (function() {
         this.cartPopupProductDetails.innerHTML = variantPropertiesHTML;
         this.cartPopupProductDetails.removeAttribute('hidden');
       }
+    },
+
+    _setupCartItem: function(item) {
+
+      var self = this;
+
+      /* Find any elements with the selector */
+
+      this.cartItemRemove = this.cartItemRemove || 
+        document.querySelector(this.selectors.cartItemRemoveButton);
+
+       /* Initialize event listeners and set context for this*/ 
+
+       this.eventHandlers.removeCartItem = this._removeCartItem.bind(this);
+
+      /* Add event listeners */ 
+
+       this.cartItemRemove.addEventListener(
+         'click',
+         function(){ self.eventHandlers.removeCartItem(item) }
+       )
+      
+    },
+
+    /* Made 10/13 Tues. */
+    _postData: async function(url,data) {
+
+      const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify(data)
+      });
+      return response.json();
+    },
+    /* Made 10/13 Tues. */
+    
+
+    /* Remove cart item for cart drawer */
+    _removeCartItem: function(item) {
+        console.log(item)
     },
 
     _getVariantOptionList: function(variantOptions) {

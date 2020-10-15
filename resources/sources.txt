@@ -1,0 +1,23 @@
+PHP - AJAX Introduction
+https://www.w3schools.com/php/php_ajax_intro.asp
+
+Cart API reference
+https://shopify.dev/docs/themes/ajax-api/reference/cart#post-cart-change-js
+
+Using Fetch
+https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
+Event.target
+https://developer.mozilla.org/en-US/docs/Web/API/Event/target
+
+Element.closest()
+https://developer.mozilla.org/en-US/docs/Web/API/Element/closest
+
+Promise
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+Promise.prototype.then()
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
+
+Using Javascript with SVG
+http://www.petercollingridge.co.uk/tutorials/svg/interactive/javascript/
